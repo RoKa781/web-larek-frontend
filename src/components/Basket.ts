@@ -27,9 +27,9 @@ export class Basket extends Component<IBasketView> {
 		}
 		this.items = [];
 	}
-
-	disableButton (value: string) {
-		this._button.setAttribute('disabled', value);
+	
+	disableButton(value: string) {
+		this.setDisabled(this._button, value === 'true');
 	}
 
 	set items (items: HTMLElement[]) {

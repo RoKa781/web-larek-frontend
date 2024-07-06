@@ -19,24 +19,26 @@ export class Api {
         };
     }
 
-    protected handleResponse(response: Response): Promise<object> {
+    protected _checkResponse(response: Response): Promise<object> {
         if (response.ok) return response.json();
-        else return response.json()
-            .then(data => Promise.reject(data.error ?? response.statusText));
+        else return response.json().then(data => Promise.reject(data.error ?? response.statusText));
+    }
+
+    protected _request(uri: string, method: string, data?: object) {
+        const url = this.baseUrl + uri;
+        const fetchOptions: RequestInit = {
+            ...this.options,
+            method,
+            body: data ? JSON.stringify(data) : undefined
+        };
+        return fetch(url, fetchOptions).then(this._checkResponse);
     }
 
     get(uri: string) {
-        return fetch(this.baseUrl + uri, {
-            ...this.options,
-            method: 'GET'
-        }).then(this.handleResponse);
+        return this._request(uri, 'GET');
     }
 
     post(uri: string, data: object, method: ApiPostMethods = 'POST') {
-        return fetch(this.baseUrl + uri, {
-            ...this.options,
-            method,
-            body: JSON.stringify(data)
-        }).then(this.handleResponse);
+        return this._request(uri, method, data);
     }
 }

@@ -29,12 +29,18 @@ export class Card extends Component<ICard> {
 		action?: ICardAction
 	) {
 		super(container);
-		this._titleElement = ensureElement<HTMLElement>(`.${blockName}__title`, container);
+		this._titleElement = ensureElement<HTMLElement>(
+			`.${blockName}__title`,
+			container
+		);
 		this._imageElement = ensureElement<HTMLImageElement>(
 			`.${blockName}__image`,
 			container
 		);
-		this._priceElement = ensureElement<HTMLElement>(`.${blockName}__price`, container);
+		this._priceElement = ensureElement<HTMLElement>(
+			`.${blockName}__price`,
+			container
+		);
 		this._categoryElement = container.querySelector(`.${blockName}__category`);
 		this._descriptionElement = container.querySelector(`.${blockName}__text`);
 		this._buttonElement = container.querySelector(`.${blockName}__button`);
@@ -47,42 +53,42 @@ export class Card extends Component<ICard> {
 		}
 	}
 
-	disablePrice (value: number | null) {
+	disablePrice(value: number | null) {
 		if (!value && this._buttonElement) {
-			this._buttonElement.disabled = true;
+			this.setDisabled(this._buttonElement, true);
 		}
 	}
 
-	set id (value: string) {
+	set id(value: string) {
 		this.container.dataset.id = value;
 	}
 
-	get id (): string {
+	get id(): string {
 		return this.container.dataset.id || '';
 	}
 
-	set title (value: string) {
+	set title(value: string) {
 		this.setText(this._titleElement, value);
 	}
 
-	get title (): string {
+	get title(): string {
 		return this._titleElement.textContent || '';
 	}
 
-	set buttonTitle (value: string) {
+	set buttonTitle(value: string) {
 		if (this._buttonElement) {
 			this.setText(this._buttonElement, value);
 		}
 	}
 
-	set image (value: string) {
+	set image(value: string) {
 		if (this._imageElement instanceof HTMLImageElement) {
 			this._imageElement.src = value;
 			this._imageElement.alt = this._titleElement.textContent;
 		}
 	}
 
-	set price (value: number | null) {
+	set price(value: number | null) {
 		this.setText(
 			this._priceElement,
 			value ? `${value.toString()} синапсов` : 'Бесценно'
@@ -90,23 +96,23 @@ export class Card extends Component<ICard> {
 		this.disablePrice(value);
 	}
 
-	get price (): number {
+	get price(): number {
 		return Number(this._priceElement.textContent || '');
 	}
 
-	set category (value: string) {
+	set category(value: string) {
 		this.setText(this._categoryElement, value);
 		const categoryClass = this._categoryElement.classList[0];
-		this._categoryElement.className = '';
-		this._categoryElement.classList.add(`${categoryClass}`);
-		this._categoryElement.classList.add(`${categoryClass}${this.categoryKeyMap[value]}`);
+		const key = this.categoryKeyMap[value];
+		this.toggleClass(this._categoryElement, `${categoryClass}${key}`, true);
 	}
 
-	set description (value: string | string[]) {
+	set description(value: string | string[]) {
 		if (Array.isArray(value)) {
 			this._descriptionElement.replaceWith(
 				...value.map((str) => {
-					const descriptionTemplate = this._descriptionElement.cloneNode() as HTMLElement;
+					const descriptionTemplate =
+						this._descriptionElement.cloneNode() as HTMLElement;
 					this.setText(descriptionTemplate, str);
 					return descriptionTemplate;
 				})
@@ -116,4 +122,3 @@ export class Card extends Component<ICard> {
 		}
 	}
 }
-
